@@ -145,7 +145,7 @@ public class ZipUtil {
      */
     public static void writeFile(InputStream in, OutputStream out) throws IOException {
         int length;
-        byte[] b = new byte[BUFFER_SIZE];
+        byte[] b = new byte[1024 * 10];
         while ((length = in.read(b)) != -1) {
             out.write(b, 0, length);
         }
