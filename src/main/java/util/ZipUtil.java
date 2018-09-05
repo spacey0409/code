@@ -76,7 +76,7 @@ public class ZipUtil {
                 } else {
                     try (InputStream in = zipFile.getInputStream(entry)) {
                         try (OutputStream out = new FileOutputStream(
-                                new File(outputDir + File.separator + entry.getName()))){
+                                new File(outputDir + File.separator + entry.getName()))) {
                             writeFile(in, out);
                         }
                     }
@@ -145,7 +145,7 @@ public class ZipUtil {
      */
     public static void writeFile(InputStream in, OutputStream out) throws IOException {
         int length;
-        byte[] b = new byte[1024 * 10];
+        byte[] b = new byte[BUFFER_SIZE];
         while ((length = in.read(b)) != -1) {
             out.write(b, 0, length);
         }

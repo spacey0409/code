@@ -20,13 +20,16 @@ import java.util.Map;
 @Slf4j
 public class JsonUtil {
 
+    private JsonUtil() {
 
-    private final static ObjectMapper OBJECT_MAPPER;
+    }
+
+    private static final ObjectMapper OBJECT_MAPPER;
 
     /**
      * 是否打印美观格式
      */
-    static boolean isPretty = true;
+    private static boolean isPretty = true;
 
     static {
 //        SerializerProvider sp = new StdSerializerProvider();
@@ -54,7 +57,7 @@ public class JsonUtil {
                 json = OBJECT_MAPPER.writeValueAsString(object);
             }
         } catch (Exception e) {
-            log.warn("json error:" + e.getMessage());
+            log.warn("json error:{}", e.getMessage());
         }
         return json;
     }
@@ -72,7 +75,7 @@ public class JsonUtil {
         try {
             t = (T) OBJECT_MAPPER.readValue(json, c);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info("context", e);
         }
         return t;
     }
@@ -95,7 +98,7 @@ public class JsonUtil {
             return null;
         } else {
             try {
-                return (T) OBJECT_MAPPER.readValue(jsonString, tr);
+                return OBJECT_MAPPER.readValue(jsonString, tr);
             } catch (Exception e) {
                 log.warn("json error:" + e.getMessage());
             }
@@ -105,9 +108,9 @@ public class JsonUtil {
 
     public static void prettyPrint(Object object) {
         try {
-            System.out.println(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object));
+            log.info(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object));
         } catch (IOException e) {
-            e.printStackTrace();
+            log.info("", e);
         }
     }
 
@@ -115,9 +118,9 @@ public class JsonUtil {
 
         try {
             Object object = OBJECT_MAPPER.readValue(json, Object.class);
-            System.out.println(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object));
+            log.info(OBJECT_MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(object));
         } catch (IOException e) {
-            System.out.println("字符串无内容");
+            log.info("字符串无内容");
         }
     }
 }
