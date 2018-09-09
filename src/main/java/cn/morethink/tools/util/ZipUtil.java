@@ -1,4 +1,4 @@
-package util;
+package cn.morethink.tools.util;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;

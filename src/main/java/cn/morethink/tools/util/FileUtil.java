@@ -1,4 +1,4 @@
-package util;
+package cn.morethink.tools.util;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -12,7 +12,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Paths;
 
-import static util.ZipUtil.createDirectory;
+import static cn.morethink.tools.util.ZipUtil.createDirectory;
 
 /**
  * @author 李文浩

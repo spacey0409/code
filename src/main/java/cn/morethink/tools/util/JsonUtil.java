@@ -1,9 +1,4 @@
-package util;
-
-/**
- * @author 李文浩
- * @date 2018/9/5
- */
+package cn.morethink.tools.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,8 +27,8 @@ public class JsonUtil {
     private static boolean isPretty = true;
 
     static {
-//        SerializerProvider sp = new StdSerializerProvider();
-//        sp.setNullValueSerializer(new NullSerializer());
+        //SerializerProvider sp = new StdSerializerProvider();
+        //sp.setNullValueSerializer(new NullSerializer());
         OBJECT_MAPPER = new ObjectMapper();
         OBJECT_MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     }

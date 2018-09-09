@@ -7,22 +7,30 @@
     <groupId>cn.morethink</groupId>
     <artifactId>tools</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <!--<repositories>-->
+    <packaging>war</packaging>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.15.RELEASE</version>
+    </parent>
 
-    <!--</repositories>-->
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>7</source>
-                    <target>7</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -61,8 +69,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.9.5</version>
         </dependency>
-
-
     </dependencies>
     <profiles>
         <!--Sonar 审查-->
