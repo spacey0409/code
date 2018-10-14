@@ -2,15 +2,20 @@ package cn.morethink.tools.util;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -27,6 +32,64 @@ public class ZipUtil {
     private static final int BUFFER_SIZE = 1024 * 100;
 
     private ZipUtil() {
+    }
+
+
+    /**
+     * 私有函数将文件集合压缩成tar包后返回
+     *
+     * @param files  要压缩的文件集合
+     * @param target tar 输出流的目标文件
+     * @return File  指定返回的目标文件
+     */
+    private static File pack(List<File> files, File target) throws IOException{
+        try (FileOutputStream fos = new FileOutputStream(target)) {
+            try (BufferedOutputStream bos = new BufferedOutputStream(fos, BUFFER_SIZE)) {
+                try (TarArchiveOutputStream taos = new TarArchiveOutputStream(bos)) {
+                    //解决文件名过长问题
+                    taos.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
+                    for (File file : files) {
+                        taos.putArchiveEntry(new TarArchiveEntry(file));
+                        try (FileInputStream fis = new FileInputStream(file)) {
+                            IOUtils.copy(fis, taos);
+                            taos.closeArchiveEntry();
+                        }
+                    }
+                }
+            }
+        }
+        return target;
+    }
+
+    /**
+     * 压缩tar文件
+     *
+     * @param list
+     * @param outPutPath
+     * @param fileName
+     */
+    public static File compress(List<File> list, String outPutPath, String fileName) throws IOException {
+        File outPutFile = new File(outPutPath + File.separator + fileName + ".tar.gz");
+        File tempTar = new File("temp.tar");
+        try (FileInputStream fis = new FileInputStream(pack(list, tempTar))) {
+            try (BufferedInputStream bis = new BufferedInputStream(fis, BUFFER_SIZE)) {
+                try (FileOutputStream fos = new FileOutputStream(outPutFile)) {
+                    try (GZIPOutputStream gzp = new GZIPOutputStream(fos)) {
+                        int count;
+                        byte[] data = new byte[BUFFER_SIZE];
+                        while ((count = bis.read(data, 0, BUFFER_SIZE)) != -1) {
+                            gzp.write(data, 0, count);
+                        }
+                    }
+                }
+            }
+        }
+        try {
+            Files.deleteIfExists(tempTar.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return outPutFile;
     }
 
     public static boolean decompress(String filePath, String outputDir, boolean isDeleted) {
