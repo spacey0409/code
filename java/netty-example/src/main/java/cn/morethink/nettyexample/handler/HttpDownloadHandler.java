@@ -7,8 +7,10 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.stream.ChunkedFile;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.activation.MimetypesFileTypeMap;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
@@ -24,28 +26,23 @@ public class HttpDownloadHandler extends SimpleChannelInboundHandler<FullHttpReq
     }
 
     /**
-     * 得到文件 mimeType
-     */
-    MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
-
-    /**
      * 分块大小
      */
-    private static final int CHUNK_SIZE = 1024 * 10;
+    private static final int CHUNK_SIZE = 1024 * 1024 * 10;
+
+    private String filePath = "/data/body.csv";
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) {
-        System.out.println(Thread.currentThread().getName());
         String uri = request.uri();
         if (uri.startsWith("/download") && request.method().equals(HttpMethod.GET)) {
-            String filePath = "/data/jdk-8u172-linux-x64.tar.gz";
             GeneralResponse generalResponse = null;
             File file = new File(filePath);
             try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
                 long fileLength = randomAccessFile.length();
                 HttpResponse response = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
                 response.headers().set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, mimeTypesMap.getContentType(file.getPath()));
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream");
                 response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()));
 
                 ctx.write(response);
@@ -55,7 +52,7 @@ public class HttpDownloadHandler extends SimpleChannelInboundHandler<FullHttpReq
                     @Override
                     public void operationComplete(ChannelProgressiveFuture future)
                             throws Exception {
-                        log.info("file {} transfer complete.", file.getName());
+                        log.info("file {} dowonload complete.", file.getName());
                     }
 
                     @Override

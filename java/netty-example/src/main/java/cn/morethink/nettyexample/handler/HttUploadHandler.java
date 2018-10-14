@@ -30,11 +30,8 @@ public class HttUploadHandler extends SimpleChannelInboundHandler<HttpObject> {
         super(false);
     }
 
-    /**
-     * Factory that writes to disk
-     */
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(true);
-    private static final String FILE_UPLOAD = "/data";
+    private static final String FILE_UPLOAD = "/data/";
     private static final String URI = "/upload";
     private HttpPostRequestDecoder httpDecoder;
     HttpRequest request;
@@ -42,7 +39,6 @@ public class HttUploadHandler extends SimpleChannelInboundHandler<HttpObject> {
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final HttpObject httpObject)
             throws Exception {
-        System.out.println(Thread.currentThread().getName());
         if (httpObject instanceof HttpRequest) {
             request = (HttpRequest) httpObject;
             if (request.uri().startsWith(URI) && request.method().equals(HttpMethod.POST)) {

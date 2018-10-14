@@ -1,6 +1,6 @@
 package cn.morethink.nettyexample;
 
-import cn.morethink.nettyexample.handler.EngineServerInitializer;
+import cn.morethink.nettyexample.handler.NettyServerInitializer;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -30,11 +30,12 @@ public final class NettyServer {
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
                 //传递路由类
-                .childHandler(new EngineServerInitializer());
+                .childHandler(new NettyServerInitializer());
 
         Channel ch = b.bind(PORT).sync().channel();
         log.info("http://{}:{}/ start", InetAddress.getLocalHost().getHostAddress(), PORT);
         ch.closeFuture().sync();
+
     }
 
 }

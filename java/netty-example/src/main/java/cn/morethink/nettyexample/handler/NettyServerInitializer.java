@@ -13,7 +13,7 @@ import io.netty.util.concurrent.EventExecutorGroup;
  * @author 李文浩
  * @date 2018/9/5
  */
-public class EngineServerInitializer extends ChannelInitializer<SocketChannel> {
+public class NettyServerInitializer extends ChannelInitializer<SocketChannel> {
 
 
     @Override
@@ -21,12 +21,12 @@ public class EngineServerInitializer extends ChannelInitializer<SocketChannel> {
         EventExecutorGroup executors = new DefaultEventExecutorGroup(1);
         ChannelPipeline p = ch.pipeline();
         //HTTP 服务的解码器
-        p.addLast(new HttpServerCodec());
+        p.addLast(new HttpServerCodec(4096, 8192, 1024 * 1024 * 10));
         // 用于上传文件
         ch.pipeline().addLast(executors, new HttUploadHandler());
         //HTTP 消息的合并处理
         p.addLast(new HttpObjectAggregator(10 * 1024));
-        // 新增Chunked cn.morethink.nettyexample.handler，主要作用是支持异步发送大的码流（例如大文件传输），但是不占用过多的内存，防止发生java内存溢出错误
+        // 新增ChunkedHandler，主要作用是支持异步发送大的码流（例如大文件传输），但是不占用过多的内存，防止发生java内存溢出错误
         ch.pipeline().addLast(new ChunkedWriteHandler());
         // 用于下载文件
         ch.pipeline().addLast(new HttpDownloadHandler());

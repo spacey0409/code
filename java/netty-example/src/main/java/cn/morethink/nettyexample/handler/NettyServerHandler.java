@@ -19,7 +19,6 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<FullHttpRequ
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, FullHttpRequest request) {
-        String uri = request.uri();
         GeneralResponse generalResponse;
         //错误处理
         generalResponse = new GeneralResponse(HttpResponseStatus.BAD_REQUEST, "请检查你的请求方法及url", null);

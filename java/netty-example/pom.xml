@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>netty-example</artifactId>
-
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>io.netty</groupId>
@@ -18,19 +18,19 @@
         </dependency>
         <!--slf4j-->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.5</version>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>logback</artifactId>
-            <version>1.0.13</version>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.16.20</version>
+            <version>1.18.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-maven-plugin</artifactId>
+            <version>1.18.0.0</version>
         </dependency>
         <dependency>
             <groupId>javax.activation</groupId>
@@ -44,26 +44,26 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                        </path>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <!--选择自己的版本即可-->
-                            <version>1.16.20</version>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <!--<build>-->
+    <!--<plugins>-->
+    <!--<plugin>-->
+    <!--<groupId>org.apache.maven.plugins</groupId>-->
+    <!--<artifactId>maven-compiler-plugin</artifactId>-->
+    <!--<configuration>-->
+    <!--<annotationProcessorPaths>-->
+    <!--<path>-->
+    <!--<groupId>org.mapstruct</groupId>-->
+    <!--<artifactId>mapstruct-processor</artifactId>-->
+    <!--</path>-->
+    <!--<path>-->
+    <!--<groupId>org.projectlombok</groupId>-->
+    <!--<artifactId>lombok</artifactId>-->
+    <!--&lt;!&ndash;选择自己的版本即可&ndash;&gt;-->
+    <!--<version>1.16.20</version>-->
+    <!--</path>-->
+    <!--</annotationProcessorPaths>-->
+    <!--</configuration>-->
+    <!--</plugin>-->
+    <!--</plugins>-->
+    <!--</build>-->
 </project>
