@@ -25,11 +25,6 @@ public class HttpDownloadHandler extends SimpleChannelInboundHandler<FullHttpReq
         super(false);
     }
 
-    /**
-     * 分块大小
-     */
-    private static final int CHUNK_SIZE = 1024 * 1024 * 10;
-
     private String filePath = "/data/body.csv";
 
     @Override
@@ -38,21 +33,21 @@ public class HttpDownloadHandler extends SimpleChannelInboundHandler<FullHttpReq
         if (uri.startsWith("/download") && request.method().equals(HttpMethod.GET)) {
             GeneralResponse generalResponse = null;
             File file = new File(filePath);
-            try (RandomAccessFile randomAccessFile = new RandomAccessFile(file, "r")) {
-                long fileLength = randomAccessFile.length();
+            try {
+                final RandomAccessFile raf = new RandomAccessFile(file, "r");
+                long fileLength = raf.length();
                 HttpResponse response = new DefaultHttpResponse(HTTP_1_1, HttpResponseStatus.OK);
                 response.headers().set(HttpHeaderNames.CONTENT_LENGTH, fileLength);
                 response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream");
                 response.headers().add(HttpHeaderNames.CONTENT_DISPOSITION, String.format("attachment; filename=\"%s\"", file.getName()));
-
                 ctx.write(response);
-                ChannelFuture sendFileFuture = null;
-                sendFileFuture = ctx.write(new ChunkedFile(randomAccessFile, 0, fileLength, CHUNK_SIZE), ctx.newProgressivePromise());
+                ChannelFuture sendFileFuture = ctx.write(new DefaultFileRegion(raf.getChannel(), 0, fileLength), ctx.newProgressivePromise());
                 sendFileFuture.addListener(new ChannelProgressiveFutureListener() {
                     @Override
                     public void operationComplete(ChannelProgressiveFuture future)
                             throws Exception {
-                        log.info("file {} dowonload complete.", file.getName());
+                        log.info("file {} transfer complete.", file.getName());
+                        raf.close();
                     }
 
                     @Override
@@ -61,7 +56,7 @@ public class HttpDownloadHandler extends SimpleChannelInboundHandler<FullHttpReq
                         if (total < 0) {
                             log.warn("file {} transfer progress: {}", file.getName(), progress);
                         } else {
-                            log.info("file {} transfer progress: {}/{}", file.getName(), progress, total);
+                            log.debug("file {} transfer progress: {}/{}", file.getName(), progress, total);
                         }
                     }
                 });
