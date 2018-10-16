@@ -42,14 +42,15 @@ public class ZipUtil {
      * @param target tar 输出流的目标文件
      * @return File  指定返回的目标文件
      */
-    private static File pack(List<File> files, File target) throws IOException{
+    private static File pack(List<File> files, File target) throws IOException {
         try (FileOutputStream fos = new FileOutputStream(target)) {
             try (BufferedOutputStream bos = new BufferedOutputStream(fos, BUFFER_SIZE)) {
                 try (TarArchiveOutputStream taos = new TarArchiveOutputStream(bos)) {
                     //解决文件名过长问题
                     taos.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
                     for (File file : files) {
-                        taos.putArchiveEntry(new TarArchiveEntry(file));
+                        //去掉文件前面的目录
+                        taos.putArchiveEntry(new TarArchiveEntry(file, file.getName()));
                         try (FileInputStream fis = new FileInputStream(file)) {
                             IOUtils.copy(fis, taos);
                             taos.closeArchiveEntry();
@@ -87,7 +88,7 @@ public class ZipUtil {
         try {
             Files.deleteIfExists(tempTar.toPath());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.warn("{}", e);
         }
         return outPutFile;
     }
